@@ -1,0 +1,2 @@
+coolc file1 cool/examples/atoi.cl
+spim file1.s 
