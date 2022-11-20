@@ -1,5 +1,6 @@
 # The forth phase of the project is the semantic analyzer part which doesn't use any tool and is written in pure C++
 ## Although there are several files in the assignment directory but unlike the previous phases we are allowed to change as many files as we want.
+### I've also developed some tests that you can see how to run them at the end of this README file!
 ### Here's the report:
 
 # `MySymbolTable`
