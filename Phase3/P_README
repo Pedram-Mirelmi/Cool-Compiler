@@ -1,0 +1,121 @@
+we're now writing a parser for "cool" language. it's actually comes on the top of lexer. the output of lexer will be the input of parser.
+so each lexical token of lexer will be a terminals for parser.
+
+to actually write the parser we use a tool called "bison" which is pretty compatible with flex.
+the structure is the same: we write some declarations and variables and stuff ... then use those to write some rules to tell the bison what to do when face special pattern and how to parse them and what to do additionally to build the parse tree.
+
+first we declare some non-terminals:
+	%type <program> program
+    %type <classes> class_list
+    %type <class_> class
+    %type <features> class_body   /* to avoid reduce/reduce conflict */
+    %type <features> feature_list
+    %type <feature> feature
+    %type <formal> formal
+    %type <formals> formal_list
+    %type <case_> case_branch
+    %type <cases> case_body
+    %type <expression> expr
+    %type <expression> let_body
+    %type <expressions> expr_list
+    %type <expressions> arg_list
+    
+
+
+Then we need to determine some precedence for our operators(the priority from bottom to top is high to low)
+ 
+    %right LET_STMT
+    %right ASSIGN
+    %left NOT
+    %nonassoc LE '<' '='
+    %left '+' '-'
+    %left '*' '/'
+    %left ISVOID
+    %left '~'
+    %left '@'
+    %left '.'
+    
+    // all in "cool-manual.pdf" section 11.1 Precedence
+   
+then we're ready to write the grammer!
+all the rules are shown in "cool-manual.pdf" page 16
+
+so we just convert it to bison. so in the first step we just convert the grammer
+in the next step we must tell the bison that what to do with each token and non-terminal after each matching and reduction and how to build the parse tree:
+
+so each rule will be this form:
+
+<VARIABLE> 	:  	RHS1	{<ACTION1>}
+		 	|	RHS2	{<ACTION2>}
+		 	|	RHS3	{<ACTION3>}
+		 	.
+		 	.
+		 	.
+		 
+		 
+		 
+	becase we want to build a tree we must map each variable with some type that we defined earlier.
+	for example:
+		the variable "expr" is of the type "expressoin"
+		the variable "expr_list" if of the type "expressions" (note the 's')
+		
+	
+the "action" section contains C++ code that is executed.
+recall that in flex we had access to matched string with the "yytext" variable. here in bison we have access to each token in RHSs
+using the syntax $i where 'i' referes to the token's order.
+
+for example if we write a rhs "expr + expr" the $1 refers to the first expression, $2 refers to '+' and finally $3 refers to the second expression.
+
+also in each step we need to actually build a node and store the neccesary data in it and add it to the parse tree
+to do so, bison offers some functions called "constructors" that do this for us and then we can assign it to the result($$) of the current parsing step.
+
+and finally for error handling we are able to put "error" in RHSs to tell the bison that catch the error in that particular part of rhs while parsing.
+
+like we did in "features" rule:
+
+	feature_list 
+			: 	
+				feature ';'			// normal and valid rule
+				{
+					$$ = single_Features($1);
+				}
+			| 	
+				error ';'			// equivalent error handling
+					{yyerrok;}
+			|
+				feature ';' error	// error handling
+					{yyerrok};
+			|
+				feature ';' feature_list 	// valid rule
+				{
+					$$ = append_Features($3 , single_Features($1));
+				}
+			
+		;
+		 	
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
