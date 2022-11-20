@@ -1,0 +1,21 @@
+{
+    "semant.cc": [
+        "everything"
+    ],
+    
+    "semant.h": [
+        "everithing"
+    ],
+
+    "symtab.h": [
+        "added 'depth' to 'SymbolTable' class"
+    ],
+
+    "stringtab.h": [
+        "added 'operator==' and 'operator!=' to 'Entry' class"
+    ],
+    "cool-tree.h": [
+        "made all classes all public(lack of good friend feature in c++98",
+        "added getType method to Expression_class & Feture_class"
+    ]
+}

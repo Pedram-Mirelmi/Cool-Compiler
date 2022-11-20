@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+
+for f in ./badTests/*.cl ; do
+    echo
+    echo
+    echo "testing $f"
+    echo "========================================"
+    ./mysemant $f ;
+    echo "========================================="
+done
